@@ -1,6 +1,14 @@
 
 
-#include "minitalk.h"
+#include "minitalk_bonus.h"
+
+volatile sig_atomic_t g_ack = 0;
+
+static void ack_handler(int signum)
+{
+    (void)signum;
+    g_ack = 1;
+}
 
 static int	parse_pid(const char *str, pid_t *pid)
 {
@@ -29,7 +37,7 @@ static int	parse_pid(const char *str, pid_t *pid)
 	return (0);
 }
 
-static int	send_char(pid_t pid, unsigned char c, useconds_t gap)
+static int	send_char_bonus(pid_t pid, unsigned char c, useconds_t gap)
 {
 	int	bit;
 	int	one;
@@ -51,7 +59,7 @@ static int	send_char(pid_t pid, unsigned char c, useconds_t gap)
 	return (0);
 }
 
-static int	send_message(pid_t pid, const char *msg, useconds_t gap)
+static int	send_message_bonus(pid_t pid, const char *msg, useconds_t gap)
 {
 	int	i;
 	int	ret;
@@ -59,7 +67,7 @@ static int	send_message(pid_t pid, const char *msg, useconds_t gap)
 	i = 0;
 	while (1)
 	{
-		ret = send_char(pid, (unsigned char)msg[i], gap);
+		ret = send_char_bonus(pid, (unsigned char)msg[i], gap);
 		if (ret != 0)
 			return (1);
 		if (msg[i] == '\0')
@@ -76,21 +84,16 @@ int	main(int argc, char **argv)
 	int			ret;
 
 	if (argc != 3)
-	{
-		ft_printf("Usage: %s <server_pid> \"message\"\n", argv[0]);
-		return (1);
-	}
+		return (ft_printf("Usage: %s <server_pid> \"message\"\n", argv[0]), 1);
+	signal(SIGUSR1, ack_handler);
 	if (parse_pid(argv[1], &server_pid) != 0)
-	{
-		ft_printf("Error: invalid PID\n");
-		return (1);
-	}
+		return (ft_printf("Error: invalid PID\n"), 1);
 	gap = 200;
-	ret = send_message(server_pid, argv[2], gap);
+	ret = send_message_bonus(server_pid, argv[2], gap);
 	if (ret != 0)
-	{
-		ft_printf("Error sending message\n");
-		return (1);
-	}
+		return (ft_printf("Error sending message\n"), 1);
+	while (!g_ack)
+		pause();
+	ft_printf("Message delivered!\n");
 	return (0);
 }
