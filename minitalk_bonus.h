@@ -8,9 +8,9 @@
 
 typedef struct s_server
 {
-    unsigned char   c;
-    int             bit_index;
-    pid_t           sender_pid;
-}   t_server;
+	unsigned char	c;
+	int				bit_index;
+	pid_t			sender_pid;
+}	t_server;
 
 #endif

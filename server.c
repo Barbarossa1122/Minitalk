@@ -1,8 +1,6 @@
-
-
 #include "minitalk.h"
 
-t_server    g_srv;
+t_server	g_srv;
 
 static void	init_server_state(void)
 {

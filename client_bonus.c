@@ -1,13 +1,11 @@
-
-
 #include "minitalk_bonus.h"
 
-volatile sig_atomic_t g_ack = 0;
+volatile sig_atomic_t	g_ack = 0;
 
-static void ack_handler(int signum)
+static void	ack_handler(int signum)
 {
-    (void)signum;
-    g_ack = 1;
+	(void)signum;
+	g_ack = 1;
 }
 
 static int	parse_pid(const char *str, pid_t *pid)
@@ -15,19 +13,14 @@ static int	parse_pid(const char *str, pid_t *pid)
 	int		i;
 	long	value;
 
+	value = 0;
+	i = 0;
 	if (!str || !str[0])
 		return (1);
-	i = 0;
 	while (str[i])
 	{
 		if (str[i] < '0' || str[i] > '9')
 			return (1);
-		i++;
-	}
-	value = 0;
-	i = 0;
-	while (str[i])
-	{
 		value = value * 10 + (str[i] - '0');
 		i++;
 	}

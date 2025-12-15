@@ -1,5 +1,3 @@
-
-
 #include "minitalk.h"
 
 static int	parse_pid(const char *str, pid_t *pid)
@@ -7,19 +5,14 @@ static int	parse_pid(const char *str, pid_t *pid)
 	int		i;
 	long	value;
 
+	value = 0;
+	i = 0;
 	if (!str || !str[0])
 		return (1);
-	i = 0;
 	while (str[i])
 	{
 		if (str[i] < '0' || str[i] > '9')
 			return (1);
-		i++;
-	}
-	value = 0;
-	i = 0;
-	while (str[i])
-	{
 		value = value * 10 + (str[i] - '0');
 		i++;
 	}
@@ -85,7 +78,7 @@ int	main(int argc, char **argv)
 		ft_printf("Error: invalid PID\n");
 		return (1);
 	}
-	gap = 200;
+	gap = 500;
 	ret = send_message(server_pid, argv[2], gap);
 	if (ret != 0)
 	{

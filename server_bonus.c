@@ -1,7 +1,26 @@
-
 #include "minitalk_bonus.h"
 
-t_server    g_srv;
+t_server	g_srv;
+
+static void	reset_sender_bonus(pid_t pid)
+{
+	g_srv.c = 0;
+	g_srv.bit_index = 0;
+	g_srv.sender_pid = pid;
+}
+
+static void	emit_char_bonus(void)
+{
+	if (g_srv.c == '\0')
+	{
+		write(1, "\n", 1);
+		kill(g_srv.sender_pid, SIGUSR1);
+	}
+	else
+		write(1, &g_srv.c, 1);
+	g_srv.c = 0;
+	g_srv.bit_index = 0;
+}
 
 static void	init_server_state_bonus(void)
 {
@@ -17,26 +36,12 @@ static void	handle_bit_bonus(int signum, siginfo_t *info, void *context)
 	if (g_srv.sender_pid == 0)
 		g_srv.sender_pid = info->si_pid;
 	else if (info->si_pid != g_srv.sender_pid)
-	{
-		g_srv.c = 0;
-		g_srv.bit_index = 0;
-		g_srv.sender_pid = info->si_pid;
-	}
+		reset_sender_bonus(info->si_pid);
 	if (signum == SIGUSR2)
 		g_srv.c |= (1 << g_srv.bit_index);
 	g_srv.bit_index++;
 	if (g_srv.bit_index == 8)
-	{
-		if (g_srv.c == '\0')
-		{
-			write(1, "\n", 1);
-			kill(g_srv.sender_pid, SIGUSR1);
-		}
-		else
-			write(1, &g_srv.c, 1);
-		g_srv.c = 0;
-		g_srv.bit_index = 0;
-	}
+		emit_char_bonus();
 }
 
 static int	setup_signals_bonus(void)
@@ -53,16 +58,16 @@ static int	setup_signals_bonus(void)
 	return (0);
 }
 
-int main(void)
+int	main(void)
 {
-    init_server_state_bonus();
-    ft_printf("Server PID: %d\n", getpid());
-    if (setup_signals_bonus() != 0)
-    {
-        write(2, "Error: sigaction\n", 17);
-        return (1);
-    }
-    while (1)
-        pause();
-    return (0);
+	init_server_state_bonus();
+	ft_printf("Server PID: %d\n", getpid());
+	if (setup_signals_bonus() != 0)
+	{
+		write(2, "Error: sigaction\n", 17);
+		return (1);
+	}
+	while (1)
+		pause();
+	return (0);
 }
