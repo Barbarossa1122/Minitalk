@@ -12,7 +12,6 @@ static void	init_server_state(void)
 static void	handle_bit(int signum, siginfo_t *info, void *context)
 {
 	(void)context;
-
 	if (g_srv.sender_pid == 0)
 		g_srv.sender_pid = info->si_pid;
 	else if (info->si_pid != g_srv.sender_pid)
@@ -23,13 +22,16 @@ static void	handle_bit(int signum, siginfo_t *info, void *context)
 	}
 	if (signum == SIGUSR2)
 		g_srv.c |= (1 << g_srv.bit_index);
-	g_srv.bit_index++;
-	if (g_srv.bit_index == 8)
+	if (++g_srv.bit_index == 8)
 	{
 		if (g_srv.c == '\0')
-			write(1, "\n", 1);
-		else
-			write(1, &g_srv.c, 1);
+		{
+			g_srv.c = 0;
+			g_srv.bit_index = 0;
+			g_srv.sender_pid = 0;
+			return ;
+		}
+		write(1, &g_srv.c, 1);
 		g_srv.c = 0;
 		g_srv.bit_index = 0;
 	}

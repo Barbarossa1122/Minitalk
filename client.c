@@ -78,7 +78,7 @@ int	main(int argc, char **argv)
 		ft_printf("Error: invalid PID\n");
 		return (1);
 	}
-	gap = 500;
+	gap = 800;
 	ret = send_message(server_pid, argv[2], gap);
 	if (ret != 0)
 	{
