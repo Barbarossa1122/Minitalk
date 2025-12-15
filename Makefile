@@ -1,7 +1,3 @@
-# **************************************************************************** #
-#                                   MINITALK                                   #
-# **************************************************************************** #
-
 NAME_SERVER = server
 NAME_CLIENT = client
 
@@ -11,14 +7,10 @@ NAME_CLIENT_BONUS = client_bonus
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
-# ---------------- PRINTF ---------------- #
-
 PRINTF_DIR = ft_printf
 PRINTF_LIB = $(PRINTF_DIR)/libftprintf.a
 PRINTF_SRC = $(wildcard $(PRINTF_DIR)/*.c)
 PRINTF_OBJS = $(PRINTF_SRC:.c=.o)
-
-# ---------------- MANDATORY ------------- #
 
 SRCS_SERVER = server.c
 SRCS_CLIENT = client.c
@@ -26,15 +18,12 @@ SRCS_CLIENT = client.c
 OBJS_SERVER = $(SRCS_SERVER:.c=.o)
 OBJS_CLIENT = $(SRCS_CLIENT:.c=.o)
 
-# ---------------- BONUS ------------------ #
 
 SRCS_SERVER_BONUS = server_bonus.c
 SRCS_CLIENT_BONUS = client_bonus.c
 
 OBJS_SERVER_BONUS = $(SRCS_SERVER_BONUS:.c=.o)
 OBJS_CLIENT_BONUS = $(SRCS_CLIENT_BONUS:.c=.o)
-
-# ---------------- RULES ------------------ #
 
 all: $(NAME_SERVER) $(NAME_CLIENT)
 
